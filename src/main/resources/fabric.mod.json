@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "paragon",
+  "version": "${version}",
+
+  "name": "Paragon",
+  "description": "utility mod for minecraft 1.19",
+  "authors": [
+    "surge",
+    "aesthetical",
+    "kassuk"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/paragon/textures/icon.png",
+  "accessWidener": "paragon.accesswidener",
+
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.paragon.Paragon"
+    ]
+  },
+  "mixins": [
+    "paragon.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.11",
+    "minecraft": "~1.19.3",
+    "java": ">=17"
+  }
+}

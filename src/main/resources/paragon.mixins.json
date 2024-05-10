@@ -1,0 +1,36 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.paragon.mixin.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "MinecraftClientMixin",
+    "entity.MixinClientPlayerEntity",
+    "entity.MixinLivingEntity",
+    "input.MixinClientPlayerInteractionManager",
+    "input.MixinItemUsageContext",
+    "input.io.KeyboardMixin",
+    "input.io.MouseMixin",
+    "item.TridentItemMixin",
+    "math.MixinVec3d",
+    "net.MixinClientConnection",
+    "net.packet.c2s.IPlayerMoveC2SPacket",
+    "net.packet.c2s.MixinPlayerInteractEntityC2SPacket",
+    "net.packet.s2c.IEntityVelocityUpdateS2CPacket",
+    "net.packet.s2c.IExplosionS2CPacket",
+    "render.GameRendererMixin",
+    "render.MixinCamera",
+    "render.MixinLightmapTextureManager",
+    "render.MixinRenderTickCounter",
+    "render.WindowMixin",
+    "render.entity.MixinLivingEntityRenderer",
+    "render.entity.MixinPlayerEntityRenderer",
+    "render.gui.MixinInGameHud",
+    "render.gui.TitleScreenMixin",
+    "world.block.MixinAbstractBlockState",
+    "world.block.MixinBlock"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

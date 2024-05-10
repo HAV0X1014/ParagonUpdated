@@ -1,0 +1,135 @@
+/**
+ * To anyone reading this, if you wonder why the class "BuildConfig" is not found, sync
+ * your gradle and open the gradle tab, other -> generateBuildConfig
+ *
+ * from yours truly, aesthetical
+ */
+
+plugins {
+	id 'fabric-loom' version '1.1-SNAPSHOT'
+	id 'de.fuerstenau.buildconfig' version '1.1.4'
+	id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
+
+configurations {
+	library
+	noRuntimeLibrary
+
+	// https://github.com/mfuerstenau/gradle-buildconfig-plugin/issues/30#issuecomment-910241307
+	create("compile")
+}
+
+buildConfig {
+	buildConfigField "String", "HASH", "${execute("git rev-parse --short HEAD")}"
+	buildConfigField "String", "BRANCH", "${execute("git branch").replace("* ", "")}"
+	buildConfigField "String", "VERSION", "${project.version}"
+
+	packageName "com.paragon.util.BuildConfig"
+}
+
+sourceSets.main.java.srcDirs += "build/gen/buildconfig/src/main"
+
+loom {
+	accessWidenerPath = file("src/main/resources/paragon.accesswidener")
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://jitpack.io" }
+	maven {
+		name = "meteor-maven-snapshots"
+		url = "https://maven.meteordev.org/snapshots"
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc:fabric-language-kotlin:${project.kotlin_language_fabric}"
+
+	// i love meteor
+	modImplementation "baritone:fabric:${project.baritone}"
+	noRuntimeLibrary "baritone:fabric:${project.baritone}"
+
+	library platform("org.lwjgl:lwjgl-bom:3.3.1")
+	library "org.lwjgl:lwjgl-nanovg"
+
+	// lets just include ALL the natives! who cares about file sizes, right?
+	library "org.lwjgl:lwjgl-nanovg::natives-windows"
+	library "org.lwjgl:lwjgl-nanovg::natives-macos"
+	library "org.lwjgl:lwjgl-nanovg::natives-linux"
+	library "org.lwjgl:lwjgl-nanovg::natives-macos-arm64"
+	library "org.lwjgl:lwjgl-nanovg::natives-linux-arm64"
+	library "org.lwjgl:lwjgl-nanovg::natives-linux-arm32"
+
+	library "com.github.therealbush:eventbus:${project.eventbus}"
+	library "com.github.wolfsurge:javaanimationsystem:${project.animation_system}"
+	library "com.github.Litarvan:OpenAuth:${project.open_auth}"
+	library "org.json:json:${project.json}"
+
+	// kotlin shit
+	library "org.jetbrains.kotlin:${project.kotlin}"
+	library "org.jetbrains.kotlinx:kotlinx-coroutines-core:${project.kotlin_coroutines}"
+
+	implementation configurations.library
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
+
+	// https://github.com/mfuerstenau/gradle-buildconfig-plugin/issues/30#issuecomment-910241307
+	duplicatesStrategy = DuplicatesStrategy.WARN
+
+	from(configurations.library.collect { if (it.isDirectory()) it else zipTree(it) })
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+compileKotlin {
+	kotlinOptions {
+		jvmTarget = JavaVersion.VERSION_17
+	}
+}
+
+compileTestKotlin {
+	kotlinOptions {
+		jvmTarget = JavaVersion.VERSION_17
+	}
+}
+
+// functions
+
+def execute(String cmd) {
+	try {
+		def stdout = new ByteArrayOutputStream()
+
+		exec {
+			commandLine cmd.split(" ")
+			standardOutput = stdout
+		}
+
+		return stdout.toString().trim()
+	} catch (ignored) {
+		return null
+	}
+}
