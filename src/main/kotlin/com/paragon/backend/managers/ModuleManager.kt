@@ -13,6 +13,7 @@ import com.paragon.client.modules.player.*
 import com.paragon.client.modules.visual.*
 import com.paragon.util.io.FileUtil
 import org.json.JSONObject
+import java.io.File
 import java.nio.charset.Charset
 import java.util.stream.Collectors
 
@@ -155,13 +156,23 @@ class ModuleManager {
         json.put("modules", modules)
         json.put("version", Paragon.version)
 
-        val file = FileUtil.PARAGON_PATH.resolve("configs").resolve("$name.json")
+        var file = FileUtil.PARAGON_PATH.resolve("configs")
+
+        assertCreateDirs(file)
+
+        file = file.resolve("$name.json")
 
         if (!file.exists()) {
             file.createNewFile()
         }
 
         FileUtil.write(file, json.toString(4))
+    }
+
+    fun assertCreateDirs(file: File) {
+        if (!file.exists()) {
+            file.mkdirs()
+        }
     }
 
     fun getModules(predicate: (Module) -> Boolean): List<Module> {
