@@ -14,6 +14,12 @@ object FileUtil {
 
     val PARAGON_PATH = mc.runDirectory.resolve("paragon")
 
+    init {
+        if (!PARAGON_PATH.exists()) {
+            PARAGON_PATH.mkdirs()
+        }
+    }
+
     fun delete(file: File): Boolean {
         if (!file.exists()) {
             return false
