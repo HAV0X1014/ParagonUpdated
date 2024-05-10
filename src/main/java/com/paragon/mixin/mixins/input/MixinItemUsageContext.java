@@ -14,8 +14,10 @@ public class MixinItemUsageContext {
 
     @Inject(method = "getStack", at = @At("RETURN"), cancellable = true)
     public void hookGetStack(CallbackInfoReturnable<ItemStack> info) {
-        if (info.getReturnValue().equals(MinecraftClient.getInstance().player.getMainHandStack()) && Paragon.inventoryManager.isDesynced()) {
+        if (MinecraftClient.getInstance().player != null && info.getReturnValue().equals(MinecraftClient.getInstance().player.getMainHandStack()) && Paragon.inventoryManager.isDesynced()) {
             info.setReturnValue(Paragon.inventoryManager.getServerStack());
         }
     }
+
 }
+

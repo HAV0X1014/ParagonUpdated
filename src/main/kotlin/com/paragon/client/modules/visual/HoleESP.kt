@@ -23,8 +23,8 @@ object HoleESP : Module("Hole ESP", "Highlights safe holes", Category.VISUAL) {
 
     private val range by int("Range", 5, 1, 1..10, "The range to search for holes in")
     private val box by enum("Box", Box.BOTH, "How to draw the box")
-    private val obsidian by bool("Passive", true, "Highlight holes surrounded by obsidian")
-    private val mixed by bool("Hostile", true, "Highlight holes surrounded by obsidian or bedrock")
+    private val obsidian by bool("Obsidian", true, "Highlight holes surrounded by obsidian")
+    private val mixed by bool("Mixed", true, "Highlight holes surrounded by obsidian or bedrock")
     private val bedrock by bool("Players", true, "Highlight holes surrounded by bedrock")
     private val alpha by int("Alpha", 100, 1, 0..255, "The alpha of the fill") visibility { box == Box.FILL || box == Box.BOTH }
     private val height by double("Height", 0.2, 0.01, 0.0..1.0, "The height of the box")
